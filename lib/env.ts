@@ -21,9 +21,12 @@ export type EnvVarName =
   | "GOOGLE_SERVICE_ACCOUNT_EMAIL"
   | "GOOGLE_PRIVATE_KEY"
   | "STAGING_SPREADSHEET_ID"
-  | "LIVE_SPREADSHEET_ID"
   | "POSTGRES_URL"
   | "ANTHROPIC_API_KEY";
+
+// Note: there is deliberately no LIVE_SPREADSHEET_ID. Decision D2
+// (docs/DECISIONS.md) — the tool never reads or writes the live NBRH
+// spreadsheet; approved rows are copied across by hand.
 
 /**
  * Vars that must be set for build step 1 to work end to end (the app
@@ -42,7 +45,6 @@ export const ALL_ENV_VARS: EnvVarName[] = [
   "GOOGLE_SERVICE_ACCOUNT_EMAIL",
   "GOOGLE_PRIVATE_KEY",
   "STAGING_SPREADSHEET_ID",
-  "LIVE_SPREADSHEET_ID",
   "POSTGRES_URL",
   "ANTHROPIC_API_KEY",
 ];

@@ -6,8 +6,10 @@ passes against Kennedy's Google Sheets and stages the results in a separate
 backbone dataset other NBRH tools depend on, so it is built to be robust, not
 fast.
 
-Full context: `docs/spec.md` (the technical spec) and `docs/kickoff.md` (the
-start-here brief). **Read both before touching anything.**
+Full context: `docs/spec.md` (the technical spec), `docs/kickoff.md` (the
+start-here brief), and `docs/DECISIONS.md` (choices Kennedy has made that
+override the spec/kickoff where they differ). **Read all three before touching
+anything.**
 
 ## Rules that apply to every session
 
@@ -19,9 +21,12 @@ start-here brief). **Read both before touching anything.**
    claim is worse than a blank cell.
 2. **Neighbours worksheet is out of scope entirely.** It holds members' personal
    data. No code path reads, writes, or references it.
-3. **Nothing lands in live Sheets without passing through staging.** "Run
-   research" and "publish to live" are two separate, separately-triggered steps.
-   The research engine writes to the staging spreadsheet only.
+3. **The tool never touches the live NBRH spreadsheet — read or write**
+   (decision D2). The engine and dashboard only ever use the staging
+   spreadsheet. Approving a row marks it approved in staging and logs to
+   `_feedback_log`; it publishes nowhere. Kennedy copies approved rows into the
+   live Sheets by hand. There is no `LIVE_SPREADSHEET_ID` and no live target in
+   `lib/sheets/client.ts`.
 4. **Every entity is checked against `_rejected_log` before it can be staged**,
    and anything matching is skipped (`docs/spec.md` §2.4).
 5. **Verification bar per entity:** 3–4 independent proof points, per-field
@@ -76,7 +81,8 @@ DM Sans body · 4px radius. Text on solid pink is always white. Tokens live in
    monthly total. Test end to end.
 4. **Review dashboard, Venues only.** List (filter/sort by confidence), per-row
    detail with source URLs + confidence tiers, approve / reject / approve-with-edit
-   → `_feedback_log`, per-run "not found" panel, run history. No bulk or
+   → `_feedback_log`, per-run "not found" panel, run history. Approve marks the
+   row approved in staging only — it does not publish (D2). No bulk or
    auto-approve.
 5. **Extend to the remaining in-scope worksheets**, one at a time, same pipeline
    with per-worksheet column configs. Neighbours excluded.

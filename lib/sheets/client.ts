@@ -7,20 +7,23 @@ import { requireEnv } from "@/lib/env";
  * account mechanism, same private-key normalisation), so the two repos
  * behave identically against Google's API.
  *
- * Two hard rules this module exists to enforce:
- *   1. The engine writes to STAGING only. `spreadsheetFor("live")` exists
- *      for a later build step (publishing approved rows) and is not called
- *      anywhere in build step 1.
- *   2. Auth and the client are built lazily, at first real call — never at
- *      module load — so `next build` in a secret-less environment doesn't
- *      throw.
+ * Decision D2 (docs/DECISIONS.md): this tool touches the STAGING
+ * spreadsheet ONLY. There is deliberately no "live" target and no
+ * LIVE_SPREADSHEET_ID — the engine can neither read nor write Kennedy's
+ * live NBRH spreadsheet. Approved rows are copied across by hand. The
+ * single-member `SpreadsheetTarget` union keeps that constraint visible
+ * at the type level and leaves an obvious seam if a read-only live
+ * target is ever added as its own reviewed step.
+ *
+ * Auth and the client are built lazily, at first real call — never at
+ * module load — so `next build` in a secret-less environment doesn't
+ * throw.
  */
 
-export type SpreadsheetTarget = "staging" | "live";
+export type SpreadsheetTarget = "staging";
 
-const ENV_FOR_TARGET: Record<SpreadsheetTarget, "STAGING_SPREADSHEET_ID" | "LIVE_SPREADSHEET_ID"> = {
+const ENV_FOR_TARGET: Record<SpreadsheetTarget, "STAGING_SPREADSHEET_ID"> = {
   staging: "STAGING_SPREADSHEET_ID",
-  live: "LIVE_SPREADSHEET_ID",
 };
 
 function spreadsheetIdFor(target: SpreadsheetTarget): string {
@@ -52,10 +55,10 @@ function getClient() {
 }
 
 /**
- * Lists the tab (worksheet) titles in a spreadsheet. Used to decide
- * whether a tab needs creating before a write.
+ * Lists the tab (worksheet) titles in the staging spreadsheet. Used to
+ * decide whether a tab needs creating before a write.
  */
-export async function listTabTitles(target: SpreadsheetTarget): Promise<string[]> {
+export async function listTabTitles(target: SpreadsheetTarget = "staging"): Promise<string[]> {
   const client = getClient();
   const res = await client.spreadsheets.get({
     spreadsheetId: spreadsheetIdFor(target),
@@ -70,7 +73,10 @@ export async function listTabTitles(target: SpreadsheetTarget): Promise<string[]
  * Creates a tab if it isn't already there. No-op (returns false) when the
  * tab already exists, so it's safe to call unconditionally before a write.
  */
-export async function ensureTab(target: SpreadsheetTarget, tabName: string): Promise<boolean> {
+export async function ensureTab(
+  target: SpreadsheetTarget,
+  tabName: string,
+): Promise<boolean> {
   const existing = await listTabTitles(target);
   if (existing.includes(tabName)) return false;
 
@@ -88,7 +94,10 @@ export async function ensureTab(target: SpreadsheetTarget, tabName: string): Pro
  * Reads a range as raw string rows (row 0 = whatever's in the first row
  * of the range). Returns [] for an empty range rather than throwing.
  */
-export async function readRange(target: SpreadsheetTarget, range: string): Promise<string[][]> {
+export async function readRange(
+  target: SpreadsheetTarget,
+  range: string,
+): Promise<string[][]> {
   const client = getClient();
   const res = await client.spreadsheets.values.get({
     spreadsheetId: spreadsheetIdFor(target),

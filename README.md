@@ -31,7 +31,9 @@ spreadsheet read/write round trip. No research logic yet.
 
    For build step 1 you need `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_PRIVATE_KEY`,
    `STAGING_SPREADSHEET_ID`, and `POSTGRES_URL`. The service account email must be
-   shared on the staging spreadsheet as an Editor.
+   shared on the staging spreadsheet as an Editor. The staging spreadsheet is the
+   only spreadsheet this tool touches — see [`docs/DECISIONS.md`](docs/DECISIONS.md)
+   D2.
 
 3. Create your admin login (writes to the Neon database in `POSTGRES_URL`):
 
