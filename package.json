@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "create-admin": "tsx scripts/create-admin.ts",
+    "delete-admin": "tsx scripts/delete-admin.ts",
     "smoke": "tsx scripts/smoke.ts"
   },
   "dependencies": {
