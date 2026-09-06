@@ -1,0 +1,271 @@
+/* =============================================================================
+   The NBRH Research Engine — global styles
+   Design tokens mirror Kennedy's "Club House OS" system (see lib/brand.ts).
+   Dark #1B1B1B background · hot pink #FF1B6E accent · Young Serif headings ·
+   DM Sans body · 4px radius. Kept deliberately small for build step 1 — this
+   grows as the review dashboard gets built.
+   ============================================================================= */
+
+:root {
+  --bg: #1b1b1b;
+  --surface: #242424;
+  --surface-2: #2e2e2e;
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --text: #f3f0eb;
+  --dim: #a8a49e;
+  --faint-text: #b5b1ab;
+  --pink: #ff1b6e;
+  --pink-soft: rgba(255, 27, 110, 0.12);
+  --pink-line: rgba(255, 27, 110, 0.45);
+  --success: #5ac490;
+  --success-soft: rgba(90, 196, 144, 0.12);
+  --danger: #f89a93;
+  --danger-soft: rgba(248, 154, 147, 0.12);
+  --radius: 4px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --font-head: "Young Serif", Georgia, serif;
+  --font-body: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0 0 0.5em;
+}
+
+a {
+  color: var(--pink);
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  background: var(--surface-2);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+/* ---- layout shells ------------------------------------------------------- */
+
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+.splash {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.splash-content {
+  width: 100%;
+  max-width: 360px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 11px;
+  color: var(--faint-text);
+  margin: 0 0 8px;
+}
+
+/* ---- cards ------------------------------------------------------------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin: 16px 0;
+}
+
+.card h2 {
+  font-size: 18px;
+}
+
+/* ---- status list ---------------------------------------------------------- */
+
+.status-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.status-row code {
+  background: transparent;
+  padding: 0;
+  color: var(--text);
+}
+
+.pill {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.pill-ok {
+  color: var(--success);
+  background: var(--success-soft);
+}
+
+.pill-missing {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.pill-optional {
+  color: var(--faint-text);
+  background: var(--line);
+}
+
+/* ---- buttons ---------------------------------------------------------- */
+
+.btn {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  transition: filter 0.15s var(--ease);
+}
+
+.btn:hover {
+  filter: brightness(1.15);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-pink {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: #fff; /* text on solid pink is always white — Kennedy's Club House OS override */
+}
+
+/* ---- forms ----------------------------------------------------------- */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 13px;
+  color: var(--dim);
+}
+
+.field input {
+  font-family: var(--font-body);
+  font-size: 15px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.field input:focus {
+  outline: 2px solid var(--pink-line);
+  outline-offset: 1px;
+}
+
+.form-error {
+  color: var(--danger);
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ---- result blocks -------------------------------------------------- */
+
+.result {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  border: 1px solid var(--line);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.result-ok {
+  color: var(--success);
+  background: var(--success-soft);
+  border-color: var(--success-soft);
+}
+
+.result-err {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-color: var(--danger-soft);
+}
+
+.muted {
+  color: var(--faint-text);
+  font-size: 13px;
+}
+
+.topbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
