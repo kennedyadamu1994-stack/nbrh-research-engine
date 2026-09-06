@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "create-admin": "tsx scripts/create-admin.ts"
+    "create-admin": "tsx scripts/create-admin.ts",
+    "smoke": "tsx scripts/smoke.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.0",
