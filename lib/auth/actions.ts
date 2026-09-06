@@ -9,6 +9,13 @@ import { SESSION_COOKIE_NAME } from "./constants";
 
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 14; // 14 days, matches store.ts
 
+// `secure` cookies are never stored by the browser over plain HTTP —
+// and Safari (unlike Chrome) does not exempt http://localhost. So in
+// local dev the login would appear to work but the session cookie would
+// be silently dropped, bouncing you straight back to /login. Require
+// Secure only in production, where the deployment is always HTTPS.
+const COOKIE_SECURE = process.env.NODE_ENV === "production";
+
 /**
  * Attempts an admin login. Returns the SAME generic error whether the
  * email doesn't exist or the password is wrong — a distinct "no account
@@ -47,7 +54,7 @@ export async function loginAction(
     const cookieStore = await cookies();
     cookieStore.set(SESSION_COOKIE_NAME, sessionToken, {
       httpOnly: true,
-      secure: true,
+      secure: COOKIE_SECURE,
       sameSite: "lax",
       maxAge: SESSION_MAX_AGE_SECONDS,
       path: "/",
